@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Allow accessing files in the internal storage -->
+    <external-path name="external_files" path="."/>
+
+    <!-- Allow accessing files on external SD cards -->
+    <root-path name="external_files" path="/storage/"/>
+
+    <!-- Allow accessing this app's temporary files -->
+    <cache-path name="cache_files" path="."/>
+</paths>

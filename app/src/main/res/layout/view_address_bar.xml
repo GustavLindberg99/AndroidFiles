@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/AddressBarView_buttonBar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/primaryColor"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageButton
+            android:id="@+id/AddressBarView_navButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/pinnedFolders"
+            android:src="@drawable/list"/>
+
+        <TextView
+            android:id="@+id/AddressBarView_collapsedParents"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:text=".../"
+            android:textAlignment="center"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"
+            android:visibility="gone"
+            tools:ignore="HardcodedText"/>
+
+        <Button
+            android:id="@+id/AddressBarView_parentFolderButton"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:padding="0px"
+            android:text="@string/thisPhone"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/AddressBarView_slash"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:text="/"
+            android:textAlignment="center"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"
+            tools:ignore="HardcodedText"/>
+
+        <Button
+            android:id="@+id/AddressBarView_currentFolderButton"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:padding="0px"
+            android:text="@string/internalStorage"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"/>
+
+        <ImageButton
+            android:id="@+id/AddressBarView_menuButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/menu"
+            android:src="@drawable/menu"/>
+
+        <ImageButton
+            android:id="@+id/AddressBarView_settingsButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/settings"
+            android:src="@drawable/settings"/>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/AddressBarView_editPath"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:importantForAutofill="no"
+        android:inputType="textUri"
+        android:padding="8dp"
+        android:textSize="18sp"
+        android:visibility="gone"
+        tools:ignore="LabelFor"/>
+</LinearLayout>

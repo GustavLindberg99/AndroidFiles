@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp"
+    tools:context=".activity.FileTypeManagerActivity">
+
+    <ListView
+        android:id="@+id/FileTypeManagerActivity_fileTypeList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:choiceMode="singleChoice"
+        android:listSelector="@color/primaryColor"/>
+
+    <TextView
+        android:id="@+id/FileTypeManagerActivity_fileTypeExtension"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/selectExtension"
+        android:textColor="@color/textColor"
+        android:textSize="24sp"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/FileTypeManagerActivity_fileTypeDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:hint="@string/description"
+        android:importantForAutofill="no"
+        android:inputType="text"/>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/FileTypeManagerActivity_alwaysShowExt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="@string/showFileExtensions"
+        android:textSize="18sp"
+        app:switchPadding="8dp"/>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/FileTypeManagerActivity_showInNewMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="@string/showInNewMenu"
+        android:textSize="18sp"
+        app:switchPadding="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/FileTypeManagerActivity_openWithText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dp"
+            android:text="@string/openWith"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"
+            tools:ignore="RtlSymmetry"/>
+
+        <TextView
+            android:id="@+id/FileTypeManagerActivity_openWithAppName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/unknownApp"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/FileTypeManagerActivity_openWithHelpText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/openWithHelpText"
+        android:textColor="@color/textColor"
+        android:textSize="12sp"/>
+
+    <TextView
+        android:id="@+id/FileTypeManagerActivity_iconText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/icon"
+        android:textColor="@color/textColor"
+        android:textSize="18sp"/>
+
+    <ImageButton
+        android:id="@+id/FileTypeManagerActivity_iconButton"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/changeIcon"
+        android:scaleType="fitCenter"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/FileTypeManagerActivity_addExtensionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@string/add"
+            tools:ignore="ButtonStyle"/>
+
+        <Button
+            android:id="@+id/FileTypeManagerActivity_deleteExtensionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete"
+            tools:ignore="ButtonStyle"/>
+    </LinearLayout>
+</LinearLayout>

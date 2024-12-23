@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    tools:context=".activity.MainActivity">
+
+    <FrameLayout
+        android:layout_width="64dp"
+        android:layout_height="64dp">
+
+        <ImageView
+            android:id="@+id/FileView_fileIcon"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/file"/>
+
+        <ImageView
+            android:id="@+id/FileView_selectedMarker"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="bottom|left"
+            android:contentDescription="@string/selected"
+            android:src="@drawable/selected"
+            android:visibility="gone"
+            tools:ignore="RtlHardcoded"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/FileView_fileName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/internalStorage"
+            android:textSize="24sp"
+            android:textColor="@color/textColor"/>
+
+        <TextView
+            android:id="@+id/FileView_fileType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/freeDiskSpace"
+            android:textSize="18sp"
+            android:textColor="@color/textColor"/>
+    </LinearLayout>
+</LinearLayout>
