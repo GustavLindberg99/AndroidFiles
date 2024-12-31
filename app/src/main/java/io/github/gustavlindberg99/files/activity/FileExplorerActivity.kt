@@ -138,6 +138,10 @@ abstract class FileExplorerActivity(private val _layoutResId: Int): AppCompatAct
         if (this._history.isEmpty()) {
             this._storagePermissionsRequest.requestPermissions()
         }
+        //Otherwise refresh the current folder (otherwise it will just show "Loading...")
+        else {
+            this.refresh()
+        }
     }
 
     public override fun onCreateContextMenu(
