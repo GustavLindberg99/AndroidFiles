@@ -282,8 +282,8 @@ class PropertiesActivity: AppCompatActivity() {
                         ),
                         Toast.LENGTH_LONG
                     ).show()
+                    mediaFolderSwitch.isChecked = !isChecked
                 }
-                mediaFolderSwitch.isChecked = !isChecked
             }
         }
         else {
