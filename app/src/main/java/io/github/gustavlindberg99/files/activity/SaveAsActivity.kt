@@ -13,6 +13,7 @@ import io.github.gustavlindberg99.files.filesystem.Folder
 import io.github.gustavlindberg99.files.filesystem.GeneralFile
 import io.github.gustavlindberg99.files.preferences.FileType
 import org.apache.commons.io.FileUtils
+import org.apache.commons.validator.routines.UrlValidator
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -22,11 +23,16 @@ import java.io.InputStream
  */
 class SaveAsActivity: BrowseActivity() {
     private lateinit var _inputStream: InputStream
-    private lateinit var _uri: Uri
+    private var _uri: Uri? = null
 
     private val _fileType: FileType? by lazy {
-        val extension = MimeTypeMap.getSingleton()
-            .getExtensionFromMimeType(this.contentResolver.getType(this._uri))
+        val uri = this._uri
+        val extension =
+            //If we're saving an internet shortcut by sharing a web page, the extension is always .url
+            if (uri == null) "url"
+            //If we're saving a file, find that file's extension
+            else MimeTypeMap.getSingleton()
+                .getExtensionFromMimeType(this.contentResolver.getType(uri))
         if (extension.isNullOrEmpty()) null
         else FileType(extension)
     }
@@ -45,18 +51,21 @@ class SaveAsActivity: BrowseActivity() {
         //Suppress deprecation warnings because getParcelableExtra is deprecated but the new way isn't available until API level 33
         val uri: Uri? = this.intent.data
             ?: @Suppress("DEPRECATION") this.intent.getParcelableExtra(Intent.EXTRA_STREAM)
+        val text: String? = this.intent.getStringExtra("android.intent.extra.TEXT")
+        val title: String? = this.intent.getStringExtra("android.intent.extra.TITLE")
         val uriPath: String? = uri?.path
         val inputStream = if (uri == null) null else this.contentResolver.openInputStream(uri)
-        if (uriPath == null || inputStream == null) {
+        if ((uriPath == null || inputStream == null) && (text == null || !UrlValidator.getInstance().isValid(text))) {
             Toast.makeText(this, R.string.saveAsFileMissing, Toast.LENGTH_SHORT).show()
             this.finish()
             return
         }
 
         this._uri = uri
-        this._inputStream = inputStream
+        this._inputStream = inputStream ?: "[InternetShortcut]\nURL=$text".byteInputStream()
 
-        val fileName = uriPath.split("/").last()
+        val fileName: String = uriPath?.split("/")?.last() ?: title
+        ?: (this.getString(R.string.createNew) + " " + this.getString(R.string.internetShortcut))
         this.setFileNameInputText(fileName)
     }
 
