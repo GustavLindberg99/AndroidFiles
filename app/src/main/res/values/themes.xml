@@ -1,10 +1,11 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.MainActivity" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:navigationBarColor">@color/primaryColor</item>
         <item name="android:statusBarColor">@color/primaryColor</item>
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
         <item name="android:alertDialogTheme">@style/alertDialogTheme</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement" tools:ignore="NewApi">true</item>
     </style>
 
     <style name="Theme.SecondaryActivities" parent="Theme.Material3.DayNight">
@@ -19,6 +20,7 @@
         <item name="android:alertDialogTheme">@style/alertDialogTheme</item>
         <item name="radioButtonStyle">@style/Widget.MaterialComponents.CompoundButton.RadioButton</item>
         <item name="switchStyle">@style/Widget.MaterialComponents.CompoundButton.Switch</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement" tools:ignore="NewApi">true</item>
     </style>
 
     <style name="alertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
@@ -32,8 +34,9 @@
     </style>
     <!-- Base application theme. -->
     <style name="Base.Theme.Files" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
     </style>
 
     <style name="Theme.Files" parent="Base.Theme.Files"/>
