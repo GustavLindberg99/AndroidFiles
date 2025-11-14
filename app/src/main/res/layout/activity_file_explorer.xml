@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.MainActivity"
     android:id="@+id/FileExplorerActivity_drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.MainActivity">
+    android:background="@color/primaryColor"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,17 +22,19 @@
         <TextView
             android:id="@+id/FileExplorerActivity_loadingText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_height="match_parent"
+            android:padding="16dp"
             android:text="@string/loading"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:background="@color/backgroundColor"/>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/FileExplorerActivity_swipeRefreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:background="@color/backgroundColor">
 
             <ScrollView
                 android:layout_width="match_parent"

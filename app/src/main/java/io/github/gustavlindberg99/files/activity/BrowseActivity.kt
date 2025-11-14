@@ -24,6 +24,7 @@ abstract class BrowseActivity: FileExplorerActivity(R.layout.activity_browse) {
 
     protected override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        this.supportActionBar!!.elevation = 0.0f
 
         this._finishButton.setText(this.finishButtonText)
 

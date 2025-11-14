@@ -54,6 +54,7 @@ class IconSelectorActivity: AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.setContentView(R.layout.activity_icon_selector)
+        this.supportActionBar!!.elevation = 0.0f
 
         this._fileSelectorLauncher = OpenActivity.createResultLauncher(this, {file ->
             val relativePathRoot = this._relativePathRoot

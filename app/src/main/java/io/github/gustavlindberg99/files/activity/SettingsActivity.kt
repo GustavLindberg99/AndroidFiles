@@ -25,6 +25,7 @@ class SettingsActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+        this.supportActionBar!!.elevation = 0.0f
 
         val showHiddenFilesSwitch: SwitchCompat =
             this.findViewById(R.id.SettingsActivity_showHiddenFiles)

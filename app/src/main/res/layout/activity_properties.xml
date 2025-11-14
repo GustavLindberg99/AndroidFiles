@@ -2,86 +2,101 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.PropertiesActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp"
-    tools:context=".activity.PropertiesActivity">
+    android:background="@color/primaryColor"
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:background="@color/backgroundColor">
 
-        <ImageButton
-            android:id="@+id/PropertiesActivity_iconButton"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/changeIcon"
-            android:scaleType="fitCenter"/>
-
-        <EditText
-            android:id="@+id/PropertiesActivity_fileName"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            tools:ignore="LabelFor"/>
-    </LinearLayout>
+            android:orientation="vertical"
+            android:padding="8dp">
 
-    <TextView
-        android:id="@+id/PropertiesActivity_typeRow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/textColor"
-        android:textSize="18sp"
-        android:text="@string/type"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/PropertiesActivity_sizeRow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/textColor"
-        android:textSize="18sp"
-        android:text="@string/computingSize"/>
+                <ImageButton
+                    android:id="@+id/PropertiesActivity_iconButton"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/changeIcon"
+                    android:scaleType="fitCenter"/>
 
-    <TextView
-        android:id="@+id/PropertiesActivity_compressedSizeRow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/textColor"
-        android:textSize="18sp"
-        android:text="@string/compressedSize"/>
+                <EditText
+                    android:id="@+id/PropertiesActivity_fileName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    tools:ignore="LabelFor"/>
+            </LinearLayout>
 
-    <TextView
-        android:id="@+id/PropertiesActivity_contentsRow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/textColor"
-        android:textSize="18sp"
-        android:text="@string/computingContents"/>
+            <TextView
+                android:id="@+id/PropertiesActivity_typeRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/textColor"
+                android:textSize="18sp"
+                android:text="@string/type"/>
 
-    <TextView
-        android:id="@+id/PropertiesActivity_lastModifiedRow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/textColor"
-        android:textSize="18sp"
-        android:text="@string/lastModified"/>
+            <TextView
+                android:id="@+id/PropertiesActivity_sizeRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/textColor"
+                android:textSize="18sp"
+                android:text="@string/computingSize"/>
 
-    <TextView
-        android:id="@+id/PropertiesActivity_targetRow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/textColor"
-        android:textSize="18sp"
-        android:text="@string/target"/>
+            <TextView
+                android:id="@+id/PropertiesActivity_compressedSizeRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/textColor"
+                android:textSize="18sp"
+                android:text="@string/compressedSize"/>
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/PropertiesActivity_mediaFolderSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mediaFolder"
-        android:textSize="18sp"
-        app:switchPadding="8dp"/>
+            <TextView
+                android:id="@+id/PropertiesActivity_contentsRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/textColor"
+                android:textSize="18sp"
+                android:text="@string/computingContents"/>
+
+            <TextView
+                android:id="@+id/PropertiesActivity_lastModifiedRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/textColor"
+                android:textSize="18sp"
+                android:text="@string/lastModified"/>
+
+            <TextView
+                android:id="@+id/PropertiesActivity_targetRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/textColor"
+                android:textSize="18sp"
+                android:text="@string/target"/>
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/PropertiesActivity_mediaFolderSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mediaFolder"
+                android:textSize="18sp"
+                app:switchPadding="8dp"/>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

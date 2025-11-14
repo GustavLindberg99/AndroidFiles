@@ -2,49 +2,63 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.SettingsActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp"
-    tools:context=".activity.SettingsActivity">
+    android:background="@color/primaryColor"
+    android:fitsSystemWindows="true">
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/SettingsActivity_showHiddenFiles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/showHiddenFiles"
-        android:textSize="18sp"
-        app:switchPadding="8dp"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/backgroundColor">
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/SettingsActivity_showFileExtensions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/showFileExtensions"
-        android:textSize="18sp"
-        app:switchPadding="8dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
 
-    <Button
-        android:id="@+id/SettingsActivity_fileTypesButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/manageFileTypes"/>
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/SettingsActivity_showHiddenFiles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/showHiddenFiles"
+                android:textSize="18sp"
+                app:switchPadding="8dp"/>
 
-    <Button
-        android:id="@+id/SettingsActivity_helpButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/help"/>
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/SettingsActivity_showFileExtensions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/showFileExtensions"
+                android:textSize="18sp"
+                app:switchPadding="8dp"/>
 
-    <Button
-        android:id="@+id/SettingsActivity_feedbackButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/feedback"/>
+            <Button
+                android:id="@+id/SettingsActivity_fileTypesButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/manageFileTypes"/>
 
-    <Button
-        android:id="@+id/SettingsActivity_aboutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/about"/>
+            <Button
+                android:id="@+id/SettingsActivity_helpButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/help"/>
+
+            <Button
+                android:id="@+id/SettingsActivity_feedbackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/feedback"/>
+
+            <Button
+                android:id="@+id/SettingsActivity_aboutButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/about"/>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

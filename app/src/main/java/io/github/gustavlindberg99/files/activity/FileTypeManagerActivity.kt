@@ -45,6 +45,7 @@ class FileTypeManagerActivity: AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.setContentView(R.layout.activity_file_type_manager)
+        this.supportActionBar!!.elevation = 0.0f
 
         this._fileTypeList.adapter = this._adapter
         this._fileTypeList.setOnItemClickListener {_, _, position: Int, _ ->

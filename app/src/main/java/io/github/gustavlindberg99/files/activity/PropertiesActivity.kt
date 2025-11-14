@@ -37,6 +37,7 @@ class PropertiesActivity: AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_properties)
+        this.supportActionBar!!.elevation = 0.0f
 
         val path = this.intent?.getStringExtra(FILE_PATH)
         val file = if (path == null) null else FileOrFolder.fromPath(path)

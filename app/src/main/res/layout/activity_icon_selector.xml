@@ -2,47 +2,56 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.IconSelectorActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp"
-    tools:context=".activity.IconSelectorActivity">
+    android:background="@color/primaryColor"
+    android:fitsSystemWindows="true">
 
-    <RadioGroup
-        android:id="@+id/IconSelectorActivity_iconGroupSelector"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:checkedButton="@id/IconSelectorActivity_builtInIcon">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/backgroundColor"
+        android:padding="8dp">
 
-        <RadioButton
-            android:id="@+id/IconSelectorActivity_builtInIcon"
+        <RadioGroup
+            android:id="@+id/IconSelectorActivity_iconGroupSelector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/builtInIcon"/>
+            android:checkedButton="@id/IconSelectorActivity_builtInIcon">
 
-        <RadioButton
-            android:id="@+id/IconSelectorActivity_iconFromApp"
+            <RadioButton
+                android:id="@+id/IconSelectorActivity_builtInIcon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/builtInIcon"/>
+
+            <RadioButton
+                android:id="@+id/IconSelectorActivity_iconFromApp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/iconFromApp"/>
+
+            <RadioButton
+                android:id="@+id/IconSelectorActivity_iconFromFile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/iconFromFile"/>
+        </RadioGroup>
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/iconFromApp"/>
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:ignore="UselessParent">
 
-        <RadioButton
-            android:id="@+id/IconSelectorActivity_iconFromFile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/iconFromFile"/>
-    </RadioGroup>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        tools:ignore="UselessParent">
-
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/IconSelectorActivity_iconList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:flexWrap="wrap"/>
-    </ScrollView>
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/IconSelectorActivity_iconList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:flexWrap="wrap"/>
+        </ScrollView>
+    </LinearLayout>
 </LinearLayout>
