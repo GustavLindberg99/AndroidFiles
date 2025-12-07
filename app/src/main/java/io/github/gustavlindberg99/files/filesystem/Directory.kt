@@ -18,14 +18,14 @@ import kotlin.io.path.absolutePathString
 open class Directory internal constructor(
     private val _getFiles: () -> Set<FileOrFolder>?,
     private val _absolutePath: String
-): Folder {
+) : Folder {
     /**
      * Convenience constructor that can be used if the directory isn't in an archive and can be accessed directly.
      *
      * @param file  The File object corresponding to this directory. Used to deduce the other parameters in the primary constructor.
      */
-    internal constructor(file: File): this(
-        {file.listFiles()?.mapNotNull {FileOrFolder.fromPath(it.absolutePath)}?.toSet()},
+    internal constructor(file: File) : this(
+        { file.listFiles()?.mapNotNull { FileOrFolder.fromPath(it.absolutePath) }?.toSet() },
         file.absolutePath
     )
 
@@ -44,7 +44,7 @@ open class Directory internal constructor(
             val file = File(path)
 
             //The entire Directory class can't inherit from FileWithCustomIcon because that would allow changing the icon of a drive or a directory inside an archive.
-            return Drive.fromPath(path) ?: object: Directory(file), FileWithCustomIcon {
+            return Drive.fromPath(path) ?: object : Directory(file), FileWithCustomIcon {
                 public override fun setIcon(iconPath: String) {
                     val desktopIniPath = this.absolutePath() + "/desktop.ini"
                     val desktopIniFile = DesktopIniFile.fromPath(desktopIniPath)
@@ -125,7 +125,11 @@ open class Directory internal constructor(
      * @return True if it's a media directory, false if it isn't.
      */
     public fun isMediaDirectory(): Boolean {
-        return this.canBeMediaDirectory() && !File(this.absolutePath() + "/.nomedia").isFile
+        if (!this.canBeMediaDirectory()) {
+            return false
+        }
+        val file = File(this.absolutePath() + "/.nomedia")
+        return !file.exists() || !file.isFile()
     }
 
     /**
