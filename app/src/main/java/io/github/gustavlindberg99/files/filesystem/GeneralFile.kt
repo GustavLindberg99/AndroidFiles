@@ -102,7 +102,7 @@ open class GeneralFile internal constructor(
     }
 
     public override fun icon(): Drawable {
-        return this.fileType().icon()
+        return this.fileType().drawable()
     }
 
     public override fun open(activity: FileExplorerActivity) {

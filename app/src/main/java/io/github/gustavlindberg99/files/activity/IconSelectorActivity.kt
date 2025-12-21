@@ -13,15 +13,15 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.flexbox.FlexboxLayout
 import io.github.gustavlindberg99.files.R
 import io.github.gustavlindberg99.files.filesystem.Directory
-import io.github.gustavlindberg99.files.preferences.allAppIcons
-import io.github.gustavlindberg99.files.preferences.builtInIcons
-import io.github.gustavlindberg99.files.preferences.iconFromPath
+import io.github.gustavlindberg99.files.preferences.Icon
+import io.github.gustavlindberg99.files.preferences.Icon.Companion.getIconExtra
+import io.github.gustavlindberg99.files.preferences.Icon.Companion.putExtra
 import java.nio.file.Paths
 
 /**
  * An activity to select an icon.
  */
-class IconSelectorActivity: AppCompatActivity() {
+class IconSelectorActivity : AppCompatActivity() {
     companion object {
         public const val RELATIVE_PATH_ROOT = "relativePathRoot"
         private const val SELECTED_ICON = "selectedIcon"
@@ -36,19 +36,19 @@ class IconSelectorActivity: AppCompatActivity() {
          */
         public fun createResultLauncher(
             activity: ComponentActivity,
-            callback: (String) -> Unit
+            callback: (Icon) -> Unit
         ): ActivityResultLauncher<Intent> = activity.registerForActivityResult(
             ActivityResultContracts.StartActivityForResult(), {
-                val iconPath: String? = it.data?.getStringExtra(SELECTED_ICON)
-                if (iconPath != null) {
-                    callback(iconPath)
+                val icon = it.data?.getIconExtra(SELECTED_ICON)
+                if (icon != null) {
+                    callback(icon)
                 }
             }
         )
     }
 
-    private val _iconList: FlexboxLayout by lazy {this.findViewById(R.id.IconSelectorActivity_iconList)}
-    private val _relativePathRoot: String? by lazy {this.intent.getStringExtra(RELATIVE_PATH_ROOT)}
+    private val _iconList: FlexboxLayout by lazy { this.findViewById(R.id.IconSelectorActivity_iconList) }
+    private val _relativePathRoot: String? by lazy { this.intent.getStringExtra(RELATIVE_PATH_ROOT) }
     private lateinit var _fileSelectorLauncher: ActivityResultLauncher<Intent>
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,19 +56,22 @@ class IconSelectorActivity: AppCompatActivity() {
         this.setContentView(R.layout.activity_icon_selector)
         this.supportActionBar!!.elevation = 0.0f
 
-        this._fileSelectorLauncher = OpenActivity.createResultLauncher(this, {file ->
+        this._fileSelectorLauncher = OpenActivity.createResultLauncher(this, { file ->
             val relativePathRoot = this._relativePathRoot
             val path =
                 if (relativePathRoot == null) file.absolutePath()
                 else Paths.get(relativePathRoot).relativize(file.path()).toString()
-            displayIcons(listOf("$path,0"))
+            val workingDirectory =
+                if (relativePathRoot == null) null
+                else Directory.fromPath(relativePathRoot)
+            displayIcons(listOf(Icon("$path,0", workingDirectory)))
         })
         val iconGroupSelector: RadioGroup =
             this.findViewById(R.id.IconSelectorActivity_iconGroupSelector)
-        iconGroupSelector.setOnCheckedChangeListener {_, checkedId ->
+        iconGroupSelector.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.IconSelectorActivity_builtInIcon -> displayIcons(builtInIcons())
-                R.id.IconSelectorActivity_iconFromApp -> displayIcons(allAppIcons())
+                R.id.IconSelectorActivity_builtInIcon -> displayIcons(Icon.builtInIcons())
+                R.id.IconSelectorActivity_iconFromApp -> displayIcons(Icon.allAppIcons())
                 R.id.IconSelectorActivity_iconFromFile -> this._iconList.removeAllViews()    //Only remove all views here, the rest is handled in the onClickListener (which should be run any time the radio button is clicked, even if it's already selected)
             }
         }
@@ -76,28 +79,24 @@ class IconSelectorActivity: AppCompatActivity() {
             this.browseForIconFromFile()
         }
 
-        displayIcons(builtInIcons())
+        displayIcons(Icon.builtInIcons())
     }
 
     /**
      * Displays a set of icons in the icons list.
      *
-     * @param iconPaths The Windows paths of the icons to display.
+     * @param icons The Windows paths of the icons to display.
      */
-    private fun displayIcons(iconPaths: List<String>) {
+    private fun displayIcons(icons: List<Icon>) {
         this._iconList.removeAllViews()
-        for (iconPath in iconPaths) {
+        for (icon in icons) {
             val view = ImageView(this)
             view.layoutParams = FlexboxLayout.LayoutParams(128, 128)
             view.setPadding(8, 8, 8, 8)
-            val relativePathRoot = this._relativePathRoot
-            val workingDirectory =
-                if (relativePathRoot == null) null
-                else Directory.fromPath(relativePathRoot)
-            val drawable = iconFromPath(workingDirectory, iconPath) ?: continue
+            val drawable = icon.drawable ?: continue
             view.setImageDrawable(drawable)
             view.setOnClickListener {
-                this.selectIcon(iconPath)
+                this.selectIcon(icon)
             }
             this._iconList.addView(view)
         }
@@ -109,11 +108,11 @@ class IconSelectorActivity: AppCompatActivity() {
     /**
      * Exits the activity returning an intent with the selected icon.
      *
-     * @param iconPath  The path of the selected icon.
+     * @param icon  The selected icon.
      */
-    private fun selectIcon(iconPath: String) {
+    private fun selectIcon(icon: Icon) {
         val intent = Intent()
-        intent.putExtra(SELECTED_ICON, iconPath)
+        intent.putExtra(SELECTED_ICON, icon)
         this.setResult(RESULT_OK, intent)
         this.finish()
     }

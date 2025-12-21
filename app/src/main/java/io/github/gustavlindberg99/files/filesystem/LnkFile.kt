@@ -8,7 +8,7 @@ import io.github.gustavlindberg99.files.activity.App
 import io.github.gustavlindberg99.files.BuildConfig
 import io.github.gustavlindberg99.files.R
 import io.github.gustavlindberg99.files.activity.FileExplorerActivity
-import io.github.gustavlindberg99.files.preferences.iconFromPath
+import io.github.gustavlindberg99.files.preferences.Icon
 import mslinks.ShellLink
 import mslinks.ShellLinkException
 import java.io.File
@@ -20,7 +20,7 @@ import java.io.IOException
  * @param _lnk  The parsed information about this shortcut.
  * @param file  The File object for the shortcut itself.
  */
-class LnkFile private constructor(private val _lnk: ShellLink, file: File): GeneralFile(file) {
+class LnkFile private constructor(private val _lnk: ShellLink, file: File) : GeneralFile(file) {
     companion object {
         /**
          * Gets the LnkFile object at the given path.
@@ -49,8 +49,7 @@ class LnkFile private constructor(private val _lnk: ShellLink, file: File): Gene
 
     public override fun icon(): Drawable {
         val customIconPath = this._lnk.iconLocation + "," + this._lnk.header.iconIndex
-        val customIcon: Drawable? =
-            iconFromPath(this.parentFolder() as? Directory, customIconPath)
+        val customIcon: Drawable? = Icon(customIconPath, this.parentFolder() as? Directory).drawable
         val target = this.target()
         val mainIcon: Drawable =
             customIcon ?: if (target != null && target != this) target.icon()

@@ -2,7 +2,7 @@ package io.github.gustavlindberg99.files.filesystem
 
 import android.graphics.drawable.Drawable
 import com.github.vincentrussell.ini.Ini
-import io.github.gustavlindberg99.files.preferences.iconFromPath
+import io.github.gustavlindberg99.files.preferences.Icon
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -48,23 +48,23 @@ class DesktopIniFile private constructor(private val _ini: Ini, file: File): Gen
         if (iconPath !is String) {
             return null
         }
-        return iconFromPath(this.parentFolder() as? Directory, iconPath)
+        return Icon(iconPath, this.parentFolder() as? Directory).drawable
     }
 
     /**
      * Sets the icon of the directory that the desktop.ini file is in.
      *
-     * @param iconPath  The Windows path of the icon to set.
+     * @param icon  The icon to set.
      *
      * @throws IOException if an I/O error occurs when reading or writing.
      */
-    public fun setParentDirIconPath(iconPath: String) {
+    public fun setParentDirIconPath(icon: Icon) {
         val contents = this._ini.sections.toList()
             .associateBy({it}, {this._ini.getSection(it).toMutableMap()}).toMutableMap()
         if (".ShellClassInfo" !in contents) {
             contents[".ShellClassInfo"] = mutableMapOf()
         }
-        contents.getValue(".ShellClassInfo")["IconResource"] = iconPath
+        contents.getValue(".ShellClassInfo")["IconResource"] = icon.windowsPath
         writeIniFile(this.absolutePath(), contents)
     }
 }

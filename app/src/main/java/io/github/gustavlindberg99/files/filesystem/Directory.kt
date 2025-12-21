@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import androidx.appcompat.content.res.AppCompatResources
 import io.github.gustavlindberg99.files.activity.App
 import io.github.gustavlindberg99.files.R
+import io.github.gustavlindberg99.files.preferences.Icon
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -45,15 +46,15 @@ open class Directory internal constructor(
 
             //The entire Directory class can't inherit from FileWithCustomIcon because that would allow changing the icon of a drive or a directory inside an archive.
             return Drive.fromPath(path) ?: object : Directory(file), FileWithCustomIcon {
-                public override fun setIcon(iconPath: String) {
+                public override fun setIcon(icon: Icon) {
                     val desktopIniPath = this.absolutePath() + "/desktop.ini"
                     val desktopIniFile = DesktopIniFile.fromPath(desktopIniPath)
                     if (desktopIniFile != null) {
-                        desktopIniFile.setParentDirIconPath(iconPath)
+                        desktopIniFile.setParentDirIconPath(icon)
                     }
                     else {
                         val desktopIniContent =
-                            mapOf(".ShellClassInfo" to mapOf("IconResource" to iconPath))
+                            mapOf(".ShellClassInfo" to mapOf("IconResource" to icon.windowsPath))
                         writeIniFile(desktopIniPath, desktopIniContent)
                     }
                 }

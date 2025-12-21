@@ -1,7 +1,7 @@
 package io.github.gustavlindberg99.files.filesystem
 
 import android.graphics.drawable.Drawable
-import io.github.gustavlindberg99.files.preferences.iconFromPath
+import io.github.gustavlindberg99.files.preferences.Icon
 import java.io.File
 
 /**
@@ -9,7 +9,7 @@ import java.io.File
  *
  * @param file  The File object corresponding to this file.
  */
-class IcoFile private constructor(file: File): GeneralFile(file) {
+class IcoFile private constructor(file: File) : GeneralFile(file) {
     companion object {
         /**
          * Gets the IcoFile object at the given path.
@@ -28,6 +28,6 @@ class IcoFile private constructor(file: File): GeneralFile(file) {
     }
 
     public override fun icon(): Drawable {
-        return iconFromPath(this.parentFolder() as? Directory, this.name()) ?: super.icon()
+        return Icon(this.name(), this.parentFolder() as? Directory).drawable ?: super.icon()
     }
 }

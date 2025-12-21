@@ -23,31 +23,31 @@ public fun initializeDefaultFileTypes() {
     url.description = App.context.getString(R.string.internetShortcut)
     url.alwaysShowExt = false
     url.showInNewMenu = true
-    url.iconPath = urlIcon(0)
+    url.icon = Icon.urlIcon(0)
 
     val nomedia = FileType("nomedia")
     nomedia.description = App.context.getString(R.string.configurationSettings)
     nomedia.alwaysShowExt = true
-    nomedia.iconPath = shell32Icon(72)
+    nomedia.icon = Icon.shell32Icon(72)
 
     val ini = FileType("ini")
     ini.description = App.context.getString(R.string.configurationSettings)
     ini.alwaysShowExt = true
-    ini.iconPath = shell32Icon(72)
+    ini.icon = Icon.shell32Icon(72)
 
     val apk = FileType("apk")
     apk.description = App.context.getString(R.string.appInstallerPackage)
-    apk.iconPath = msiexecIcon(0)
+    apk.icon = Icon.msiexecIcon(0)
 
     val txt = FileType("txt")
     txt.description = App.context.getString(R.string.textDocument)
     txt.alwaysShowExt = false
     txt.showInNewMenu = true
-    txt.iconPath = shell32Icon(70)
+    txt.icon = Icon.shell32Icon(70)
 
     val pdf = FileType("pdf")
     pdf.alwaysShowExt = false
-    pdf.iconPath = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe,13"
+    pdf.icon = Icon.msedgeIcon(13)
 
     val ico = FileType("ico")
     ico.description = App.context.getString(R.string.icon)
@@ -61,7 +61,7 @@ public fun initializeDefaultFileTypes() {
         )
         archiveType.alwaysShowExt = false
         archiveType.showInNewMenu = true
-        archiveType.iconPath = imageresIcon(165)
+        archiveType.icon = Icon.imageresIcon(165)
     }
 
     for (imageExtension in listOf("png", "jpg", "jpeg", "gif", "bmp", "heic", "hif", "svg")) {
@@ -71,7 +71,7 @@ public fun initializeDefaultFileTypes() {
             imageExtension.uppercase()
         )
         imageType.alwaysShowExt = false
-        imageType.iconPath = shell32Icon(311)
+        imageType.icon = Icon.shell32Icon(311)
     }
 
     for (audioExtension in listOf("mp3", "m4a", "wma")) {
@@ -81,7 +81,7 @@ public fun initializeDefaultFileTypes() {
             audioExtension.uppercase()
         )
         audioType.alwaysShowExt = false
-        audioType.iconPath = shell32Icon(116)
+        audioType.icon = Icon.shell32Icon(116)
     }
 
     for (videoExtension in listOf("mp4", "m4v", "wmv", "mkv")) {
@@ -91,7 +91,7 @@ public fun initializeDefaultFileTypes() {
             videoExtension.uppercase()
         )
         videoType.alwaysShowExt = false
-        videoType.iconPath = shell32Icon(313)
+        videoType.icon = Icon.shell32Icon(313)
     }
 
     //Create default files for the New menu

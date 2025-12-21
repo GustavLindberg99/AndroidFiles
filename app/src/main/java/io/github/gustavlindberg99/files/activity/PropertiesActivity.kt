@@ -19,7 +19,6 @@ import io.github.gustavlindberg99.files.filesystem.LnkFile
 import io.github.gustavlindberg99.files.filesystem.ThisPhoneFolder
 import io.github.gustavlindberg99.files.filesystem.UrlFile
 import io.github.gustavlindberg99.files.filesystem.fileSizeToString
-import io.github.gustavlindberg99.files.preferences.iconFromPath
 import java.io.File
 import java.io.IOException
 import java.nio.file.attribute.FileTime
@@ -87,14 +86,10 @@ class PropertiesActivity: AppCompatActivity() {
         iconButton.setImageDrawable(file.icon())
         if (file is FileWithCustomIcon) {
             iconButton.isEnabled = true
-            val iconSelectorLauncher = IconSelectorActivity.createResultLauncher(this, {iconPath ->
-                val icon = iconFromPath(
-                    file as? Directory ?: file.parentFolder() as? Directory,
-                    iconPath
-                )
+            val iconSelectorLauncher = IconSelectorActivity.createResultLauncher(this, {icon ->
                 try {
-                    file.setIcon(iconPath)
-                    iconButton.setImageDrawable(icon)
+                    file.setIcon(icon)
+                    iconButton.setImageDrawable(icon.drawable)
                 }
                 catch (e: IOException) {
                     Toast.makeText(

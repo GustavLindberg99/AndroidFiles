@@ -18,8 +18,6 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.widget.addTextChangedListener
 import io.github.gustavlindberg99.files.preferences.FileType
 import io.github.gustavlindberg99.files.R
-import io.github.gustavlindberg99.files.filesystem.Drive
-import io.github.gustavlindberg99.files.preferences.iconFromPath
 
 /**
  * Activity to manage file types.
@@ -70,10 +68,9 @@ class FileTypeManagerActivity: AppCompatActivity() {
             this._selectedFileType?.showInNewMenu = this._showInNewMenu.isChecked
         }
 
-        val iconSelectorLauncher = IconSelectorActivity.createResultLauncher(this, {iconPath ->
-            val icon = iconFromPath(Drive.internalStorageFolder(), iconPath)
-            this._selectedFileType?.iconPath = iconPath
-            this._iconButton.setImageDrawable(icon)
+        val iconSelectorLauncher = IconSelectorActivity.createResultLauncher(this, {icon ->
+            this._selectedFileType?.icon = icon
+            this._iconButton.setImageDrawable(icon.drawable)
         })
         this._iconButton.setOnClickListener {
             val intent = Intent(this, IconSelectorActivity::class.java)
@@ -106,7 +103,7 @@ class FileTypeManagerActivity: AppCompatActivity() {
         this._fileTypeDescription.setText(selectedFileType.description)
         this._alwaysShowExt.isChecked = selectedFileType.alwaysShowExt
         this._showInNewMenu.isChecked = selectedFileType.showInNewMenu
-        this._iconButton.setImageDrawable(selectedFileType.icon())
+        this._iconButton.setImageDrawable(selectedFileType.drawable())
         val openWithApp: ApplicationInfo? = selectedFileType.openWith()
         if (openWithApp == null) {
             this._openWithAppName.text = this.getString(R.string.unknownApp)

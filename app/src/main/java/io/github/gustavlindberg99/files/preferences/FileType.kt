@@ -10,7 +10,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import io.github.gustavlindberg99.files.BuildConfig
 import io.github.gustavlindberg99.files.R
 import io.github.gustavlindberg99.files.activity.App
-import io.github.gustavlindberg99.files.filesystem.Drive
+import io.github.gustavlindberg99.files.preferences.Icon.Companion.getIcon
+import io.github.gustavlindberg99.files.preferences.Icon.Companion.putIcon
 import java.io.File
 
 private const val FILE_TYPE_DESCRIPTIONS = "fileTypeDescriptions"
@@ -34,17 +35,17 @@ class FileType(public val extension: String) {
         public fun getAll(): List<FileType> {
             return listOf(FILE_TYPE_DESCRIPTIONS, ALWAYS_SHOW_EXT, OPEN_WITH, ICON_PATH)
                 .asSequence()
-                .map {App.context.getSharedPreferences(it, Context.MODE_PRIVATE).all.keys}
+                .map { App.context.getSharedPreferences(it, Context.MODE_PRIVATE).all.keys }
                 .flatten()
                 .sorted()
                 .distinct()
-                .map {FileType(it)}
+                .map { FileType(it) }
                 .toList()
         }
     }
 
     public override fun equals(other: Any?): Boolean {
-        return other is FileType && other.extension.lowercase() == this.extension.lowercase()
+        return other is FileType && other.extension.equals(this.extension, ignoreCase = true)
     }
 
     public override fun hashCode(): Int {
@@ -93,20 +94,20 @@ class FileType(public val extension: String) {
             .putBoolean(this.extension.lowercase(), value)
             .apply()
 
-    public var iconPath: String
+    public var icon: Icon
         get() {
             val openWith = this.openWith()
-            val defaultIconPath: String =
-                if (openWith == null) shell32Icon(0)
-                else appIcons(openWith)[1]
+            val defaultIcon =
+                if (openWith == null) Icon.shell32Icon(0)
+                else Icon.appIcons(openWith)[1]
             return App.context
                 .getSharedPreferences(ICON_PATH, AppCompatActivity.MODE_PRIVATE)
-                .getString(this.extension.lowercase(), null) ?: defaultIconPath
+                .getIcon(this.extension.lowercase(), defaultIcon)
         }
         set(value) = App.context
             .getSharedPreferences(ICON_PATH, AppCompatActivity.MODE_PRIVATE)
             .edit()
-            .putString(this.extension.lowercase(), value)
+            .putIcon(this.extension.lowercase(), value)
             .apply()
 
     /**
@@ -114,9 +115,8 @@ class FileType(public val extension: String) {
      *
      * @return The file type's icon.
      */
-    public fun icon(): Drawable {
-        return iconFromPath(Drive.internalStorageFolder(), this.iconPath)
-            ?: AppCompatResources.getDrawable(App.context, R.drawable.file)!!
+    public fun drawable(): Drawable {
+        return this.icon.drawable ?: AppCompatResources.getDrawable(App.context, R.drawable.file)!!
     }
 
     /**
@@ -134,24 +134,55 @@ class FileType(public val extension: String) {
      * @return The app that's supposed to open this file type, or null if no app is set.
      */
     public fun openWith(): ApplicationInfo? {
+        //If the file has no extension, openWith is always null
         if (this.extension.isEmpty()) {
             return null
         }
+
+        //First try to fetch the info directly from the system
         val file =
             File(Environment.getExternalStorageDirectory().toString() + "/." + this.extension)
         val intent = openFileIntent(file)
         var packageName: String? = App.context.packageManager
             .resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
             ?.activityInfo?.packageName
+
         if (packageName == null || packageName == "android") {
-            if (this.extension.lowercase() in listOf("lnk", "url", "zip", "tar", "7z")) {
-                packageName = BuildConfig.APPLICATION_ID
-            }
-            else {
-                return null
+            //If the system didn't provide any info, it might be because it has been cleared, in which case we should use the info cached by this app
+            packageName = App.context
+                .getSharedPreferences(OPEN_WITH, AppCompatActivity.MODE_PRIVATE)
+                .getString(this.extension.lowercase(), null)
+
+            if (packageName == null) {
+                //If it still doesn't work and we know this app itself can open the file, then it probably is this app
+                if (this.extension.lowercase() in listOf("lnk", "url", "zip", "tar", "7z")) {
+                    packageName = BuildConfig.APPLICATION_ID
+                }
+                //If we still haven't found anything, there isn't any app that can open the file
+                else {
+                    return null
+                }
             }
         }
+        else {
+            //If the system found an app that can open this file, cache it in case it gets cleared for no reason
+            this.cacheOpenWith(packageName)
+        }
+
         return App.context.packageManager.getApplicationInfo(packageName, 0)
+    }
+
+    /**
+     * Caches the open with app, since some versions of Android clear it automatically, so that the icon doesn't get messed up.
+     *
+     * @param packageName   The package name of the app that opens this file type.
+     */
+    private fun cacheOpenWith(packageName: String) {
+        App.context
+            .getSharedPreferences(OPEN_WITH, AppCompatActivity.MODE_PRIVATE)
+            .edit()
+            .putString(this.extension.lowercase(), packageName)
+            .apply()
     }
 
     /**
