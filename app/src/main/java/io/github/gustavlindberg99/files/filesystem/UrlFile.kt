@@ -20,7 +20,7 @@ import java.io.IOException
  * @param _url  The target of this internet shortcut.
  * @param file  The File object for the shortcut itself.
  */
-class UrlFile private constructor(private val _url: String, file: File): GeneralFile(file) {
+class UrlFile private constructor(private val _url: String, file: File) : GeneralFile(file) {
     companion object {
         /**
          * Gets the UrlFile object at the given path.

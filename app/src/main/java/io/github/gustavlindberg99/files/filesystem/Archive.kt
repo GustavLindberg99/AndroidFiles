@@ -27,7 +27,7 @@ abstract class Archive protected constructor(
     getFile: () -> File,
     absolutePath: String,
     size: Long
-): GeneralFile(getFile, absolutePath, size), Folder {
+) : GeneralFile(getFile, absolutePath, size), Folder {
     companion object {
         /**
          * Gets the ArchiveFile object at the given path.
@@ -77,7 +77,7 @@ abstract class Archive protected constructor(
          * @throws IOException if an I/O error occurs when reading or writing.
          */
         @JvmStatic
-        protected fun <T: Closeable> compress(
+        protected fun <T : Closeable> compress(
             files: Collection<FileOrFolder>,
             destination: String,
             constructor: (File) -> T,
@@ -88,7 +88,7 @@ abstract class Archive protected constructor(
             //Get all the entries
             val entries = mutableListOf<Pair<GeneralFile?, String>>()
             lateinit var compressFiles: (Collection<FileOrFolder>, String) -> Unit
-            compressFiles = {subFiles: Collection<FileOrFolder>, prefix: String ->
+            compressFiles = { subFiles: Collection<FileOrFolder>, prefix: String ->
                 for (file in subFiles) {
                     if (file is GeneralFile) {
                         val name = prefix + file.name()
@@ -135,7 +135,7 @@ abstract class Archive protected constructor(
             //Make sure that there are no files and folders with the same name
             for (fileNamePair in entries) {
                 val name = fileNamePair.second
-                if (entries.any {it !== fileNamePair && it.second.startsWith("$name/")}) {
+                if (entries.any { it !== fileNamePair && it.second.startsWith("$name/") }) {
                     throw IOException(
                         String.format(
                             App.context.getString(R.string.entryBothFileAndDirectory),
@@ -147,7 +147,7 @@ abstract class Archive protected constructor(
 
             //Write the entries to the output stream. Use reversed because distinctBy keeps the first one, but we want to keep the last one so that files get overwritten.
             val outputStream = constructor(File(destination))
-            for ((file, name) in entries.reversed().distinctBy {it.second}) {
+            for ((file, name) in entries.reversed().distinctBy { it.second }) {
                 putNextEntry(outputStream, file, name)
             }
             outputStream.close()
@@ -171,13 +171,13 @@ abstract class Archive protected constructor(
         val directories = mutableMapOf<Directory, MutableSet<FileOrFolder>>()
         for ((entry, rawPath, size) in this.entries()) {
             val path = rawPath.replace(Regex("/+"), "/").replace(Regex("/$"), "")
-            val parentDirs = path.split("/").filter {it.isNotEmpty()}.dropLast(1)
+            val parentDirs = path.split("/").filter { it.isNotEmpty() }.dropLast(1)
             val absolutePath = this.absolutePath() + "/" + path
             val file =
                 //If it's a directory entry, add an empty directory. If it's not supposed to be empty and it's already been added, nothing happens because if it's a set. If it will be added later, this empty directory will be removed first, see below.
-                if (size == null) Directory({setOf()}, absolutePath)
+                if (size == null) Directory({ setOf() }, absolutePath)
                 else {
-                    val getTempFile = {this.createTemporaryFileFromZipEntry(entry, path)}
+                    val getTempFile = { this.createTemporaryFileFromZipEntry(entry, path) }
                     val tempFilePath = getTempFile().absolutePath
                     val zip = Archive.archiveLibObject(tempFilePath, ::ZipFile)
                     val tar = Archive.archiveLibObject(tempFilePath, ::TarFile)
@@ -192,7 +192,7 @@ abstract class Archive protected constructor(
             for (i in parentDirs.indices) {
                 lateinit var nextParent: Directory
                 nextParent = Directory(
-                    {directories.getValue(nextParent)},
+                    { directories.getValue(nextParent) },
                     this.absolutePath() + "/" + parentDirs.slice(0..i).joinToString("/")
                 )
                 if (nextParent !in directories) {
@@ -274,7 +274,7 @@ abstract class Archive protected constructor(
      * @throws IOException if an I/O error occurs when reading or writing.
      */
     public fun createEmptyDirectory(relativePath: String) {
-        val emptyDirectory = Directory({setOf()}, this.absolutePath() + "/" + relativePath)
+        val emptyDirectory = Directory({ setOf() }, this.absolutePath() + "/" + relativePath)
         this.addFiles(listOf(emptyDirectory to relativePath))
     }
 

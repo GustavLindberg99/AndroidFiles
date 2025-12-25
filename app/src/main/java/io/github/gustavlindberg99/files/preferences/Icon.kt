@@ -3,8 +3,6 @@ package io.github.gustavlindberg99.files.preferences
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
@@ -267,23 +265,20 @@ class Icon(public val windowsPath: String, private val _workingDirectory: Direct
          *
          * @return A list with two elements, one with the plain app icon and one with the app icon in a file icon.
          */
-        public fun appIcons(app: ApplicationInfo): List<Icon> {
+        public fun appIcons(app: AppInfo): List<Icon> {
             return listOf(
-                "android:" + app.packageName + ",0",
-                "android:" + app.packageName + ",1"
+                "android:${app.packageName},0",
+                "android:${app.packageName},1"
             ).map { Icon(it) }
         }
 
         /**
          * Gets all the icons for all installed apps.
          *
-         * @return A list of the paths of all app icons.
+         * @return A list of all app icons.
          */
-        @SuppressLint("QueryPermissionsNeeded")
         public fun allAppIcons(): List<Icon> {
-            return App.context.packageManager.getInstalledApplications(0).flatMap {
-                if (it.enabled && it.sourceDir.startsWith("/data/app")) Icon.appIcons(it) else listOf()
-            }
+            return AppInfo.allApps().flatMap { Icon.appIcons(it) }
         }
     }
 
@@ -340,12 +335,7 @@ class Icon(public val windowsPath: String, private val _workingDirectory: Direct
         val appMatch: List<String> =
             appRegex.matchEntire(this.windowsPath)?.groupValues ?: return null
         val packageName = appMatch[1]
-        val appIcon: Drawable = try {
-            App.context.packageManager.getApplicationIcon(packageName)
-        }
-        catch (_: PackageManager.NameNotFoundException) {
-            return null
-        }
+        val appIcon: Drawable = AppInfo(packageName).drawable ?: return null
         val iconIndex = appMatch[2]
         val result = if (iconIndex == "1") {
             val bitmap = Bitmap.createBitmap(

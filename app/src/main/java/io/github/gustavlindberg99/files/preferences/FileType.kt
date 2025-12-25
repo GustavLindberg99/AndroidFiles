@@ -1,7 +1,6 @@
 package io.github.gustavlindberg99.files.preferences
 
 import android.content.Context
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.os.Environment
@@ -19,6 +18,8 @@ private const val ALWAYS_SHOW_EXT = "alwaysShowExt"
 private const val SHOW_IN_NEW_MENU = "showInNewMenu"
 private const val OPEN_WITH = "openWith"
 private const val ICON_PATH = "iconPath"
+
+private val filesOpenableWithThisApp = listOf("lnk", "url", "zip", "tar", "7z")
 
 /**
  * A class representing a file type.
@@ -133,7 +134,7 @@ class FileType(public val extension: String) {
      *
      * @return The app that's supposed to open this file type, or null if no app is set.
      */
-    public fun openWith(): ApplicationInfo? {
+    public fun openWith(): AppInfo? {
         //If the file has no extension, openWith is always null
         if (this.extension.isEmpty()) {
             return null
@@ -147,15 +148,15 @@ class FileType(public val extension: String) {
             .resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
             ?.activityInfo?.packageName
 
-        if (packageName == null || packageName == "android") {
+        if (packageName == null || packageName == "android" || (packageName == BuildConfig.APPLICATION_ID && this.extension.lowercase() !in filesOpenableWithThisApp)) {
             //If the system didn't provide any info, it might be because it has been cleared, in which case we should use the info cached by this app
             packageName = App.context
                 .getSharedPreferences(OPEN_WITH, AppCompatActivity.MODE_PRIVATE)
                 .getString(this.extension.lowercase(), null)
 
-            if (packageName == null) {
+            if (packageName == null || (packageName == BuildConfig.APPLICATION_ID && this.extension.lowercase() !in filesOpenableWithThisApp)) {
                 //If it still doesn't work and we know this app itself can open the file, then it probably is this app
-                if (this.extension.lowercase() in listOf("lnk", "url", "zip", "tar", "7z")) {
+                if (this.extension.lowercase() in filesOpenableWithThisApp) {
                     packageName = BuildConfig.APPLICATION_ID
                 }
                 //If we still haven't found anything, there isn't any app that can open the file
@@ -169,7 +170,7 @@ class FileType(public val extension: String) {
             this.cacheOpenWith(packageName)
         }
 
-        return App.context.packageManager.getApplicationInfo(packageName, 0)
+        return AppInfo(packageName)
     }
 
     /**

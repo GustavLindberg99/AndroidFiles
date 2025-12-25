@@ -3,7 +3,6 @@ package io.github.gustavlindberg99.files.activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.ApplicationInfo
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.InputType
@@ -18,25 +17,26 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.widget.addTextChangedListener
 import io.github.gustavlindberg99.files.preferences.FileType
 import io.github.gustavlindberg99.files.R
+import io.github.gustavlindberg99.files.preferences.AppInfo
 
 /**
  * Activity to manage file types.
  */
-class FileTypeManagerActivity: AppCompatActivity() {
-    private val _fileTypeList: ListView by lazy {this.findViewById(R.id.FileTypeManagerActivity_fileTypeList)}
-    private val _adapter by lazy {ArrayAdapter<String>(this, android.R.layout.simple_list_item_1)}
+class FileTypeManagerActivity : AppCompatActivity() {
+    private val _fileTypeList: ListView by lazy { this.findViewById(R.id.FileTypeManagerActivity_fileTypeList) }
+    private val _adapter by lazy { ArrayAdapter<String>(this, android.R.layout.simple_list_item_1) }
 
-    private val _fileTypeExtension: TextView by lazy {this.findViewById(R.id.FileTypeManagerActivity_fileTypeExtension)}
-    private val _fileTypeDescription: EditText by lazy {this.findViewById(R.id.FileTypeManagerActivity_fileTypeDescription)}
-    private val _alwaysShowExt: SwitchCompat by lazy {this.findViewById(R.id.FileTypeManagerActivity_alwaysShowExt)}
-    private val _showInNewMenu: SwitchCompat by lazy {this.findViewById(R.id.FileTypeManagerActivity_showInNewMenu)}
-    private val _openWithText: TextView by lazy {this.findViewById(R.id.FileTypeManagerActivity_openWithText)}
-    private val _openWithAppName: TextView by lazy {this.findViewById(R.id.FileTypeManagerActivity_openWithAppName)}
-    private val _openWithHelpText: TextView by lazy {this.findViewById(R.id.FileTypeManagerActivity_openWithHelpText)}
-    private val _iconText: TextView by lazy {this.findViewById(R.id.FileTypeManagerActivity_iconText)}
-    private val _iconButton: ImageButton by lazy {this.findViewById(R.id.FileTypeManagerActivity_iconButton)}
-    private val _addExtensionButton: Button by lazy {this.findViewById(R.id.FileTypeManagerActivity_addExtensionButton)}
-    private val _deleteExtensionButton: Button by lazy {this.findViewById(R.id.FileTypeManagerActivity_deleteExtensionButton)}
+    private val _fileTypeExtension: TextView by lazy { this.findViewById(R.id.FileTypeManagerActivity_fileTypeExtension) }
+    private val _fileTypeDescription: EditText by lazy { this.findViewById(R.id.FileTypeManagerActivity_fileTypeDescription) }
+    private val _alwaysShowExt: SwitchCompat by lazy { this.findViewById(R.id.FileTypeManagerActivity_alwaysShowExt) }
+    private val _showInNewMenu: SwitchCompat by lazy { this.findViewById(R.id.FileTypeManagerActivity_showInNewMenu) }
+    private val _openWithText: TextView by lazy { this.findViewById(R.id.FileTypeManagerActivity_openWithText) }
+    private val _openWithAppName: TextView by lazy { this.findViewById(R.id.FileTypeManagerActivity_openWithAppName) }
+    private val _openWithHelpText: TextView by lazy { this.findViewById(R.id.FileTypeManagerActivity_openWithHelpText) }
+    private val _iconText: TextView by lazy { this.findViewById(R.id.FileTypeManagerActivity_iconText) }
+    private val _iconButton: ImageButton by lazy { this.findViewById(R.id.FileTypeManagerActivity_iconButton) }
+    private val _addExtensionButton: Button by lazy { this.findViewById(R.id.FileTypeManagerActivity_addExtensionButton) }
+    private val _deleteExtensionButton: Button by lazy { this.findViewById(R.id.FileTypeManagerActivity_deleteExtensionButton) }
 
     private var _selectedFileType: FileType? = null
 
@@ -46,7 +46,7 @@ class FileTypeManagerActivity: AppCompatActivity() {
         this.supportActionBar!!.elevation = 0.0f
 
         this._fileTypeList.adapter = this._adapter
-        this._fileTypeList.setOnItemClickListener {_, _, position: Int, _ ->
+        this._fileTypeList.setOnItemClickListener { _, _, position: Int, _ ->
             val selectedFileType = FileType.getAll().getOrNull(position)
             if (selectedFileType == null) {
                 this.deselectFileType()
@@ -68,7 +68,7 @@ class FileTypeManagerActivity: AppCompatActivity() {
             this._selectedFileType?.showInNewMenu = this._showInNewMenu.isChecked
         }
 
-        val iconSelectorLauncher = IconSelectorActivity.createResultLauncher(this, {icon ->
+        val iconSelectorLauncher = IconSelectorActivity.createResultLauncher(this, { icon ->
             this._selectedFileType?.icon = icon
             this._iconButton.setImageDrawable(icon.drawable)
         })
@@ -104,14 +104,15 @@ class FileTypeManagerActivity: AppCompatActivity() {
         this._alwaysShowExt.isChecked = selectedFileType.alwaysShowExt
         this._showInNewMenu.isChecked = selectedFileType.showInNewMenu
         this._iconButton.setImageDrawable(selectedFileType.drawable())
-        val openWithApp: ApplicationInfo? = selectedFileType.openWith()
-        if (openWithApp == null) {
+        val openWithAppId: AppInfo? = selectedFileType.openWith()
+        val appName: String? = openWithAppId?.name
+        val appIcon: Drawable? = openWithAppId?.drawable
+        if (appName == null || appIcon == null) {
             this._openWithAppName.text = this.getString(R.string.unknownApp)
             this._openWithAppName.setCompoundDrawables(null, null, null, null)
         }
         else {
-            this._openWithAppName.text = this.packageManager.getApplicationLabel(openWithApp)
-            val appIcon: Drawable = this.packageManager.getApplicationIcon(openWithApp)
+            this._openWithAppName.text = appName
             appIcon.setBounds(0, 0, 40, 40)
             this._openWithAppName.setCompoundDrawables(appIcon, null, null, null)
         }
@@ -184,17 +185,17 @@ class FileTypeManagerActivity: AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle(R.string.enterExtension)
             .setView(input)
-            .setPositiveButton(R.string.ok, {_, _ ->
+            .setPositiveButton(R.string.ok, { _, _ ->
                 val extension = input.text.toString().trim()
                 val fileType = FileType(extension)
                 fileType.alwaysShowExt = false
                 this._adapter.add(extension)
-                this._adapter.sort {a, b -> a.compareTo(b)}
+                this._adapter.sort { a, b -> a.compareTo(b) }
                 val index = FileType.getAll().indexOf(fileType)
                 this._fileTypeList.setSelection(index)
                 this.selectFileType(fileType)
             })
-            .setNegativeButton(R.string.cancel, {dialog: DialogInterface, _ -> dialog.cancel()})
+            .setNegativeButton(R.string.cancel, { dialog: DialogInterface, _ -> dialog.cancel() })
             .show()
     }
 
@@ -211,7 +212,7 @@ class FileTypeManagerActivity: AppCompatActivity() {
                     fileTypeToDelete.extension
                 )
             )
-            .setPositiveButton(R.string.yes, {_, _ ->
+            .setPositiveButton(R.string.yes, { _, _ ->
                 val index = FileType.getAll().indexOf(fileTypeToDelete)
                 fileTypeToDelete.remove()
                 this._adapter.remove(fileTypeToDelete.extension)
@@ -223,7 +224,7 @@ class FileTypeManagerActivity: AppCompatActivity() {
                     this.selectFileType(newSelectedFileType)
                 }
             })
-            .setNegativeButton(R.string.no, {_, _ ->})
+            .setNegativeButton(R.string.no, { _, _ -> })
             .show()
     }
 }
