@@ -1,6 +1,5 @@
 package io.github.gustavlindberg99.files.preferences
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap

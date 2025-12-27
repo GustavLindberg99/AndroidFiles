@@ -92,14 +92,16 @@ class AppInfo(public val packageName: String) {
          * Gets all apps, both the ones this app is allowed to see and the ones that are cached.
          */
         @SuppressLint("QueryPermissionsNeeded")
-        public fun allApps(): List<AppInfo> {
-            val result = mutableListOf<AppInfo>()
+        public fun allApps(): Set<AppInfo> {
+            val result = mutableSetOf<AppInfo>()
             for (app in App.context.packageManager.getInstalledApplications(0)) {
                 if (app.enabled && app.sourceDir.startsWith("/data/app")) {
                     result.add(AppInfo(app.packageName))
                 }
             }
-            //TODO: get cached icons as well
+            result += App.context
+                .getSharedPreferences(APP_ICON_CACHE, AppCompatActivity.MODE_PRIVATE)
+                .all.keys.map { AppInfo(it) }
             return result
         }
     }
