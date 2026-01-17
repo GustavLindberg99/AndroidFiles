@@ -2,9 +2,7 @@ package io.github.gustavlindberg99.files.preferences
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
@@ -12,6 +10,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import io.github.gustavlindberg99.files.R
 import io.github.gustavlindberg99.files.activity.App
 import io.github.gustavlindberg99.files.filesystem.Directory
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.graphics.createBitmap
 
 private const val WINDOWS_PATH = "windowsPath"
 private const val WORKING_DIRECTORY = "workingDirectory"
@@ -134,11 +134,11 @@ class Icon(public val windowsPath: String, private val _workingDirectory: Direct
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is Icon && this.windowsPath == other.windowsPath
+        return other is Icon && this.windowsPath == other.windowsPath && this._workingDirectory == other._workingDirectory
     }
 
     override fun hashCode(): Int {
-        return this.windowsPath.hashCode()
+        return this.windowsPath.hashCode() + 31 * (this._workingDirectory?.hashCode() ?: 0)
     }
 
     companion object {
@@ -337,16 +337,12 @@ class Icon(public val windowsPath: String, private val _workingDirectory: Direct
         val appIcon: Drawable = AppInfo(packageName).drawable ?: return null
         val iconIndex = appMatch[2]
         val result = if (iconIndex == "1") {
-            val bitmap = Bitmap.createBitmap(
-                appIcon.intrinsicWidth,
-                appIcon.intrinsicHeight,
-                Bitmap.Config.ARGB_8888
-            )
+            val bitmap = createBitmap(appIcon.intrinsicWidth, appIcon.intrinsicHeight)
             val canvas = Canvas(bitmap)
             appIcon.setBounds(0, canvas.height / 6, canvas.width / 2, canvas.height * 2 / 3)
             appIcon.draw(canvas)
             val fileIcon = AppCompatResources.getDrawable(App.context, R.drawable.file)!!
-            LayerDrawable(arrayOf(fileIcon, BitmapDrawable(App.context.resources, bitmap)))
+            LayerDrawable(arrayOf(fileIcon, bitmap.toDrawable(App.context.resources)))
         }
         else {
             appIcon

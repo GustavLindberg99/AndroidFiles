@@ -12,6 +12,7 @@ import android.view.DragEvent
 import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -23,6 +24,7 @@ import androidx.core.view.allViews
 import androidx.core.view.setPadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.gustavlindberg99.androidtimer.Timer
 import io.github.gustavlindberg99.files.R
 import io.github.gustavlindberg99.files.filesystem.Drive
 import io.github.gustavlindberg99.files.filesystem.FileOrFolder
@@ -41,17 +43,18 @@ private const val SAVED_HISTORY = "history"
 /**
  * Abstract base class for any file explorer, both the main activity and file browse dialogs.
  */
-abstract class FileExplorerActivity(private val _layoutResId: Int): AppCompatActivity() {
+abstract class FileExplorerActivity(private val _layoutResId: Int) : AppCompatActivity() {
     private val _history = mutableListOf<Folder>()
 
-    private val _drawerLayout: DrawerLayout by lazy {this.findViewById(R.id.FileExplorerActivity_drawerLayout)}
-    private val _navLayout: LinearLayout by lazy {this.findViewById(R.id.FileExplorerActivity_navLayout)}
-    private val _addressBar: AddressBarView by lazy {this.findViewById(R.id.FileExplorerActivity_addressBar)}
+    private val _drawerLayout: DrawerLayout by lazy { this.findViewById(R.id.FileExplorerActivity_drawerLayout) }
+    private val _navLayout: LinearLayout by lazy { this.findViewById(R.id.FileExplorerActivity_navLayout) }
+    private val _addressBar: AddressBarView by lazy { this.findViewById(R.id.FileExplorerActivity_addressBar) }
 
-    private val _swipeRefreshLayout: SwipeRefreshLayout by lazy {this.findViewById(R.id.FileExplorerActivity_swipeRefreshLayout)}
-    private val _fileList: LinearLayout by lazy {this.findViewById(R.id.FileExplorerActivity_fileList)}
-    private val _loadingText: TextView by lazy {this.findViewById(R.id.FileExplorerActivity_loadingText)}
-    private val _emptyFolderText: TextView by lazy {this.findViewById(R.id.FileExplorerActivity_emptyFolderText)}
+    private val _swipeRefreshLayout: SwipeRefreshLayout by lazy { this.findViewById(R.id.FileExplorerActivity_swipeRefreshLayout) }
+    private val _fileList: LinearLayout by lazy { this.findViewById(R.id.FileExplorerActivity_fileList) }
+    private val _scrollView: ScrollView by lazy { this.findViewById(R.id.FileExplorerActivity_scrollView) }
+    private val _loadingText: TextView by lazy { this.findViewById(R.id.FileExplorerActivity_loadingText) }
+    private val _emptyFolderText: TextView by lazy { this.findViewById(R.id.FileExplorerActivity_emptyFolderText) }
 
     private val _hiddenFileViews = mutableListOf<FileView>()
     private var _longClickedView: FileView? = null
@@ -60,6 +63,8 @@ abstract class FileExplorerActivity(private val _layoutResId: Int): AppCompatAct
     private lateinit var _storagePermissionsRequest: StoragePermissionsRequest
     private lateinit var _refreshLauncher: ActivityResultLauncher<Intent>
     private lateinit var _newMenuFileCreator: NewMenuFileCreator
+
+    private val _timer: Timer by lazy { Timer() }
 
     protected override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,10 +80,10 @@ abstract class FileExplorerActivity(private val _layoutResId: Int): AppCompatAct
         val savedHistory = savedInstanceState?.getStringArrayList(SAVED_HISTORY)
         if (savedHistory != null) {
             this._history.clear()
-            this._history.addAll(savedHistory.mapNotNull {Folder.fromPath(it)})
+            this._history.addAll(savedHistory.mapNotNull { Folder.fromPath(it) })
         }
 
-        this._addressBar.setOnSelectedFolderChangedListener {folder: Folder? ->
+        this._addressBar.setOnSelectedFolderChangedListener { folder: Folder? ->
             if (folder == null) {
                 Toast.makeText(this, R.string.folderNotFound, Toast.LENGTH_LONG).show()
             }
@@ -92,7 +97,7 @@ abstract class FileExplorerActivity(private val _layoutResId: Int): AppCompatAct
             this.currentFolder().parentFolder()?.open(this)
         }
 
-        this.onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+        this.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             public override fun handleOnBackPressed() {
                 this@FileExplorerActivity.onBackButtonPressed()
             }
@@ -125,7 +130,7 @@ abstract class FileExplorerActivity(private val _layoutResId: Int): AppCompatAct
 
     public override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val history = this._history.map {it.absolutePath()}
+        val history = this._history.map { it.absolutePath() }
         outState.putStringArrayList(SAVED_HISTORY, ArrayList(history))
     }
 
@@ -240,7 +245,7 @@ abstract class FileExplorerActivity(private val _layoutResId: Int): AppCompatAct
      * @return A collection containing all selected files.
      */
     public fun selectedFiles(): Collection<FileOrFolder> {
-        return this.fileViews().filter {it.fileSelected}.map {it.file}
+        return this.fileViews().filter { it.fileSelected }.map { it.file }
     }
 
     /**
@@ -342,7 +347,7 @@ abstract class FileExplorerActivity(private val _layoutResId: Int): AppCompatAct
      */
     private fun viewsInFolder(folder: Folder): List<FileView> {
         val files: List<FileOrFolder> =
-            folder.files().sortedBy {it.name().lowercase()}.sortedBy {it is GeneralFile}
+            folder.files().sortedBy { it.name().lowercase() }.sortedBy { it is GeneralFile }
 
         val result = mutableListOf<FileView>()
         for (file in files) {
@@ -372,8 +377,8 @@ abstract class FileExplorerActivity(private val _layoutResId: Int): AppCompatAct
                 view.fileSelected = !view.fileSelected
             }
         }
-        view.setOnLongClickListener {this.onFileLongClick(view)}
-        view.setOnDragListener {_, event -> this.onFileDrag(view, event)}
+        view.setOnLongClickListener { this.onFileLongClick(view) }
+        view.setOnDragListener { _, event -> this.onFileDrag(view, event) }
         return view
     }
 
@@ -412,29 +417,94 @@ abstract class FileExplorerActivity(private val _layoutResId: Int): AppCompatAct
     /**
      * Function that should be called when a drag event occurs on a file view.
      *
-     * @param view  The view that has been clicked on.
-     * @param event The drag event.
+     * @param fileView  The view that the file has been dropped onto. So if file A is dropped into folder B, this will be the view for folder B. To get file A, use `this.selectedFiles()`.
+     * @param event     The drag event.
      *
      * @return True for compatibility with setOnDragListener.
      */
-    private fun onFileDrag(view: FileView, event: DragEvent): Boolean {
-        if (event.action == DragEvent.ACTION_DROP) {
-            val file = view.file
-            if (//If it's dropped onto itself, check if it's left the initial view. If it hasn't, it's a regular long click in which case show the context menu, otherwise do nothing.
-                (file in this.selectedFiles() && this._longClickedView == view)
-                //If it's dropped onto something else, it's a copy/move. Always show the context menu in this case, the main activity will handle showing the correct options.
-                || (file !in this.selectedFiles() && (file is Folder || (file is LnkFile && file.target() is Folder)))
-            ) {
-                view.showContextMenu(event.x, event.y)
+    private fun onFileDrag(fileView: FileView, event: DragEvent): Boolean {
+        when (event.action) {
+            DragEvent.ACTION_DROP -> {
+                this.showContextMenuIfNeeded(fileView, event.x, event.y)
+                this._longClickedView = null
             }
-            this._longClickedView = null
-        }
-        else if (event.action == DragEvent.ACTION_DRAG_EXITED && _longClickedView != null) {
-            //If the drag moves out of the original view, show the drag shadow because then we're sure that it's a drag and drop and not a simple long click
-            view.updateDragShadow(View.DragShadowBuilder(_longClickedView))
-            this._longClickedView = null
+
+            DragEvent.ACTION_DRAG_EXITED -> {
+                if (this._longClickedView != null) {
+                    //If the drag moves out of the original view, show the drag shadow because then we're sure that it's a drag and drop and not a simple long click
+                    fileView.updateDragShadow(View.DragShadowBuilder(this._longClickedView))
+                    this._longClickedView = null
+                }
+            }
+
+            DragEvent.ACTION_DRAG_ENDED -> {
+                this._timer.stop()
+            }
+
+            DragEvent.ACTION_DRAG_LOCATION -> {
+                val fileViewLocation = IntArray(2)
+                fileView.getLocationOnScreen(fileViewLocation)
+                val eventY = fileViewLocation[1] + event.y
+                this.updateScrollTimer(eventY)
+            }
         }
         return true
+    }
+
+    /**
+     * Shows a context menu on `fileView` unless a file is dragged onto itself or onto a non-folder.
+     *
+     * @param fileView  The view that the file has been dropped onto. So if file A is dropped into folder B, this will be the view for folder B. To get file A, use `this.selectedFiles()`.
+     * @param x         The x-coordinate to show the context menu at relative to `fileView`.
+     * @param y         The y-coordinate to show the context menu at relative to `fileView`.
+     */
+    private fun showContextMenuIfNeeded(fileView: FileView, x: Float, y: Float) {
+        val file = fileView.file
+        val showContextMenu =
+            //If it's dropped onto itself, check if it's left the initial view. If it hasn't, it's a regular long click in which case show the context menu, otherwise do nothing.
+            if (file in this.selectedFiles()) this._longClickedView == fileView
+            //If it's dropped onto something else, it's a copy/move. Always show the context menu in this case, the main activity will handle showing the correct options.
+            else file is Folder || (file is LnkFile && file.target() is Folder)
+        if (showContextMenu) {
+            fileView.showContextMenu(x, y)
+        }
+    }
+
+    /**
+     * Makes the scroll timer scroll up or down if `eventY` is close to the top or bottom of the screen, and stops the scroll timer if it isn't.
+     *
+     * @param y The y-coordinate of the event relative to the entire screen.
+     */
+    private fun updateScrollTimer(y: Float) {
+        val scrollViewLocation = IntArray(2)
+        this._scrollView.getLocationOnScreen(scrollViewLocation)
+
+        val top = scrollViewLocation[1]
+        val bottom = scrollViewLocation[1] + this._scrollView.height
+        val scrollThreshold = 20
+        val scrollSpeed = 300   //Pixels per second
+        val scrollInterval = 50 //Milliseconds
+        val scrollDistancePerCallback = scrollSpeed * scrollInterval / 1000
+
+        if (this._timer.isRunning) {
+            if (y > top + scrollThreshold && y < bottom - scrollThreshold) {
+                this._timer.stop()
+            }
+        }
+        else {
+            if (y <= top + scrollThreshold) {
+                this._timer.setInterval(
+                    { this._scrollView.scrollBy(0, -scrollDistancePerCallback) },
+                    scrollInterval
+                )
+            }
+            else if (y >= bottom - scrollThreshold) {
+                this._timer.setInterval(
+                    { this._scrollView.scrollBy(0, scrollDistancePerCallback) },
+                    scrollInterval
+                )
+            }
+        }
     }
 
     /**
@@ -462,7 +532,7 @@ abstract class FileExplorerActivity(private val _layoutResId: Int): AppCompatAct
         AlertDialog.Builder(this)
             .setTitle(title)
             .setView(input)
-            .setPositiveButton(R.string.ok, {_, _ ->
+            .setPositiveButton(R.string.ok, { _, _ ->
                 val name = input.text.toString().trim()
                 if (isUrl) {
                     if (UrlValidator().isValid(name)) {
@@ -479,7 +549,7 @@ abstract class FileExplorerActivity(private val _layoutResId: Int): AppCompatAct
                     }
                 }
             })
-            .setNegativeButton(R.string.cancel, {dialog: DialogInterface, _ -> dialog.cancel()})
+            .setNegativeButton(R.string.cancel, { dialog: DialogInterface, _ -> dialog.cancel() })
             .show()
     }
 

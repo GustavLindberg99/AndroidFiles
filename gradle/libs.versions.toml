@@ -1,26 +1,21 @@
 [versions]
-agp = "8.13.2"
-commonsCompress = "1.21"
-commonsValidator = "1.9.0"
+agp = "9.0.0"
+commonsCompress = "1.28.0"
+commonsValidator = "1.10.1"
 flexbox = "3.0.0"
-jarchivelib = "0.5.0"
-javaIniParser = "1.6"
-kotlin = "1.9.0"
-coreKtx = "1.13.1"
-junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-appcompat = "1.7.0"
-kotlinReflect = "1.9.0"
-material = "1.12.0"
-constraintlayout = "2.1.4"
+javaIniParser = "1.7"
+kotlin = "2.3.0"
+coreKtx = "1.17.0"
+appcompat = "1.7.1"
+material = "1.13.0"
+constraintlayout = "2.2.1"
 mslinks = "1.0.6.2"
-navigationFragmentKtx = "2.7.7"
-navigationUiKtx = "2.7.7"
-swiperefreshlayout = "1.1.0"
-activity = "1.9.1"
-xz = "1.9"
-zip4j = "2.11.5"
+navigationFragmentKtx = "2.9.6"
+navigationUiKtx = "2.9.6"
+swiperefreshlayout = "1.2.0"
+activity = "1.12.2"
+xz = "1.11"
+androidtimer = "1.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -28,13 +23,8 @@ androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefre
 commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
 commons-validator = { module = "commons-validator:commons-validator", version.ref = "commonsValidator" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
-jarchivelib = { module = "org.rauschig:jarchivelib", version.ref = "jarchivelib" }
 java-ini-parser = { module = "com.github.vincentrussell:java-ini-parser", version.ref = "javaIniParser" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlinReflect" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
@@ -42,9 +32,9 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 mslinks = { module = "com.github.vatbub:mslinks", version.ref = "mslinks" }
 xz = { module = "org.tukaani:xz", version.ref = "xz" }
-zip4j = { module = "net.lingala.zip4j:zip4j", version.ref = "zip4j" }
+androidtimer = { module = "com.github.gustavlindberg99:androidtimer", version.ref = "androidtimer" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+android-library = { id = "com.android.library", version.ref = "agp" }
